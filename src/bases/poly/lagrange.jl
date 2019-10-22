@@ -14,20 +14,20 @@ on the interval [-1,+1].
 """
 struct Lagrange{T} <: PolynomialBasis{T,T}
     n :: Int
-    grid :: ScatteredGrid{T}
+    nodes :: ScatteredGrid{T}
 
     denom::Vector{T}    # denominator of Lagrange polynomials
     diffs::Matrix{T}    # inverse of differences between nodes
     vdminv::Matrix{T}   # inverse Vandermonde matrix
 
-    function Lagrange{T}(g) where {T}
+    function Lagrange{T}(nodes) where {T}
         local p::T
 
-        local ξ = g.points
+        local ξ = nodes.points
         local n = length(ξ)
 
-        @assert minimum(ξ) ≥ leftendpoint(support(g))
-        @assert maximum(ξ) ≤ rightendpoint(support(g))
+        @assert minimum(ξ) ≥ leftendpoint(support(nodes))
+        @assert maximum(ξ) ≤ rightendpoint(support(nodes))
 
         denom = ones(n)
         diffs = zeros(n,n)
@@ -42,12 +42,12 @@ struct Lagrange{T} <: PolynomialBasis{T,T}
             end
         end
 
-        new(n, g, denom, diffs, vandermonde_matrix_inverse(ξ))
+        new(n, nodes, denom, diffs, vandermonde_matrix_inverse(ξ))
     end
 end
 
-function Lagrange(g::ScatteredGrid{T}) where {T}
-    Lagrange{T}(g)
+function Lagrange(nodes::ScatteredGrid{T}) where {T}
+    Lagrange{T}(nodes)
 end
 
 function Lagrange(ξ::Vector{T}) where {T}
@@ -58,21 +58,21 @@ end
 Lagrange(x, a::Number, b::Number) = rescale(Lagrange(x), a, b)
 
 
-nodes(b::Lagrange)  = b.grid.points
+nodes(b::Lagrange)  = b.nodes.points
 nnodes(b::Lagrange) = b.n
 degree(b::Lagrange) = b.n-1
 
 BasisFunctions.native_index(b::Lagrange, idxn) = PolynomIndex(idxn)
 BasisFunctions.hasderivative(b::Lagrange) = true
 BasisFunctions.hasantiderivative(b::Lagrange) = true
-BasisFunctions.support(b::Lagrange) = support(b.grid)
+BasisFunctions.support(b::Lagrange) = support(b.nodes)
 
 Base.size(b::Lagrange) = b.n
 
 
-function BasisFunctions.unsafe_eval_element(b::Lagrange{T}, idx::PolynomIndex, x) where {T}
+function BasisFunctions.unsafe_eval_element(b::Lagrange{T}, idx::PolynomIndex, x::T) where {T}
     local y::T = 1
-    local ξ = b.grid.points
+    local ξ = nodes(b)
     for i in 1:length(ξ)
         i ≠ idx ? y *= x - ξ[i] : nothing
     end
@@ -80,10 +80,10 @@ function BasisFunctions.unsafe_eval_element(b::Lagrange{T}, idx::PolynomIndex, x
 end
 
 
-function BasisFunctions.unsafe_eval_element_derivative(b::Lagrange{T}, idx::PolynomIndex, x) where {T}
+function BasisFunctions.unsafe_eval_element_derivative(b::Lagrange{T}, idx::PolynomIndex, x::T) where {T}
     local y::T = 0
     local z::T
-    local ξ = b.grid.points
+    local ξ = nodes(b)
     local d = b.diffs
 
     for l in 1:nnodes(b)
@@ -99,12 +99,12 @@ function BasisFunctions.unsafe_eval_element_derivative(b::Lagrange{T}, idx::Poly
 end
 
 
-function unsafe_eval_element_antiderivative(b::Lagrange{T}, idx::PolynomIndex, x) where {T}
-    local y = zero(b.grid.points)
+function unsafe_eval_element_antiderivative(b::Lagrange{T}, idx::PolynomIndex, x::T) where {T}
+    local y = zero(nodes(b))
     y[idx] = 1
     lint = polyint(Poly(b.vdminv*y))
     return lint(x) - lint(leftendpoint(support(b)))
 end
 
 
-similar(b::Lagrange, ::Type{T}, g::ScatteredGrid{T}) where {T} = Lagrange{T}(g)
+similar(b::Lagrange, ::Type{T}, nodes::ScatteredGrid{T}) where {T} = Lagrange{T}(nodes)
