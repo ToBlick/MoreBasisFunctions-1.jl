@@ -2,6 +2,8 @@
 # The Lagrange basis
 #######################
 
+using FastGaussQuadrature
+
 using Polynomials: Poly, polyint
 using BasisFunctions: ChebyshevInterval, PolynomialBasis
 using BasisFunctions: hasderivative, hasantiderivative, support
@@ -13,7 +15,7 @@ const LagrangeIndex = NativeIndex{:lagrange}
 A basis of the Lagrange polynomials `l_i(x) = ∏_(j,i≠j) (x - ξ^j) / (ξ^i - ξ^j)`
 on the interval [-1,+1].
 """
-struct Lagrange{T} <: PolynomialBasis{T,T}
+struct Lagrange{S,T} <: PolynomialBasis{T,T}
     n :: Int
     nodes :: ScatteredGrid{T}
 
@@ -21,7 +23,7 @@ struct Lagrange{T} <: PolynomialBasis{T,T}
     diffs::Matrix{T}    # inverse of differences between nodes
     vdminv::Matrix{T}   # inverse Vandermonde matrix
 
-    function Lagrange{T}(nodes) where {T}
+    function Lagrange{S,T}(nodes) where {S,T}
         local p::T
 
         local ξ = nodes.points
@@ -47,16 +49,23 @@ struct Lagrange{T} <: PolynomialBasis{T,T}
     end
 end
 
-function Lagrange(nodes::ScatteredGrid{T}) where {T}
-    Lagrange{T}(nodes)
-end
+Lagrange{S}(nodes::ScatteredGrid{T}) where {S,T} = Lagrange{S,T}(nodes)
+Lagrange(nodes::ScatteredGrid) = Lagrange{:custom}(nodes)
+Lagrange{S}(ξ::Vector) where {S} = Lagrange{S}(ScatteredGrid(ξ, LagrangeInterval()))
+Lagrange(ξ::Vector) = Lagrange(ScatteredGrid(ξ, LagrangeInterval()))
 
-function Lagrange(ξ::Vector{T}) where {T}
-    Lagrange(ScatteredGrid(ξ, LagrangeInterval()))
-end
+get_nodes(::Val{:legendre}, n) = gausslegendre(n)[1]
+get_nodes(::Val{:lobatto}, n) = gausslobatto(n)[1]
+get_nodes(node_type, T, n) = convert(Array{T}, get_nodes(node_type, n))
+
+Lagrange{S}(n::Int) where {S} = Lagrange{S}(get_nodes(Val(S), n))
+Lagrange{S,T}(n::Int) where {S,T} = Lagrange{S}(get_nodes(Val(S), T, n))
+
+const LagrangeLegendre = Lagrange{:legendre}
+const LagrangeLobatto = Lagrange{:lobatto}
 
 # Convenience constructor: map the Lagrange basis to the interval [a,b]
-Lagrange(x, a::Number, b::Number) = rescale(Lagrange(x), a, b)
+Lagrange{S}(n::Int, a::Number, b::Number) where {S} = rescale(Lagrange{S}(n), a, b)
 
 
 nodes(b::Lagrange)  = b.nodes.points
@@ -68,10 +77,12 @@ BasisFunctions.hasderivative(b::Lagrange) = true
 BasisFunctions.hasantiderivative(b::Lagrange) = true
 BasisFunctions.support(b::Lagrange) = support(b.nodes)
 
+BasisFunctions.similar(::Lagrange{S}, ::Type{T}, n::Int) where {S,T} = Lagrange{S,T}(n)
+
 Base.size(b::Lagrange) = b.n
 
 
-function BasisFunctions.unsafe_eval_element(b::Lagrange{T}, idx::LagrangeIndex, x::T) where {T}
+function BasisFunctions.unsafe_eval_element(b::Lagrange{S,T}, idx::LagrangeIndex, x::T) where {S,T}
     local y::T = 1
     local ξ = nodes(b)
     for i in 1:length(ξ)
@@ -81,7 +92,7 @@ function BasisFunctions.unsafe_eval_element(b::Lagrange{T}, idx::LagrangeIndex, 
 end
 
 
-function BasisFunctions.unsafe_eval_element_derivative(b::Lagrange{T}, idx::LagrangeIndex, x::T) where {T}
+function BasisFunctions.unsafe_eval_element_derivative(b::Lagrange{S,T}, idx::LagrangeIndex, x::T) where {S,T}
     local y::T = 0
     local z::T
     local ξ = nodes(b)
@@ -100,12 +111,9 @@ function BasisFunctions.unsafe_eval_element_derivative(b::Lagrange{T}, idx::Lagr
 end
 
 
-function unsafe_eval_element_antiderivative(b::Lagrange{T}, idx::LagrangeIndex, x::T) where {T}
+function unsafe_eval_element_antiderivative(b::Lagrange{S,T}, idx::LagrangeIndex, x::T) where {S,T}
     local y = zero(nodes(b))
     y[value(idx)] = 1
     lint = polyint(Poly(b.vdminv*y))
     return lint(x) - lint(leftendpoint(support(b)))
 end
-
-
-similar(b::Lagrange, ::Type{T}, nodes::ScatteredGrid{T}) where {T} = Lagrange{T}(nodes)

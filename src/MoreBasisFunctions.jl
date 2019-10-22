@@ -5,6 +5,7 @@ module MoreBasisFunctions
 
     export Bernstein, BernsteinIndex, BernsteinInterval
     export Lagrange, LagrangeIndex, LagrangeInterval
+    export LagrangeLegendre, LagrangeLobatto
 
     export eval_element, eval_element_derivative, eval_element_antiderivative
     export nodes, nnodes, degree, support

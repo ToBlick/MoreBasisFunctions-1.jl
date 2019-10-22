@@ -7,6 +7,9 @@ P = 80
 
     ξ = [-1.0, +1.0]
     b = Lagrange(ξ)
+    blob = LagrangeLobatto(2)
+    bleg = LagrangeLegendre(2)
+
 
     @testset "$(rpad("Basic functionality",P))" begin
         @test nodes(b) == ξ
@@ -15,6 +18,8 @@ P = 80
         @test hasderivative(b) == true
         @test hasantiderivative(b) == true
         @test support(b) == LagrangeInterval{eltype(ξ)}()
+        @test nodes(blob) == nodes(b)
+        @test nodes(bleg) == [-0.5773502691896258, 0.5773502691896258]
     end
 
 

@@ -5,6 +5,7 @@ version = "0.0.1"
 
 [deps]
 BasisFunctions = "4343a256-5453-507d-8aad-01a9d7189916"
+FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"
 GridArrays = "356ae075-8bc9-5ef9-a342-46c9ba26438c"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
