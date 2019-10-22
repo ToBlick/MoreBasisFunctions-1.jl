@@ -16,9 +16,9 @@ struct Lagrange{T} <: PolynomialBasis{T,T}
     n :: Int
     grid :: ScatteredGrid{T}
 
-    denom::Vector{T}
-    diffs::Matrix{T}
-    vdminv::Matrix{T}
+    denom::Vector{T}    # denominator of Lagrange polynomials
+    diffs::Matrix{T}    # inverse of differences between nodes
+    vdminv::Matrix{T}   # inverse Vandermonde matrix
 
     function Lagrange{T}(g) where {T}
         local p::T
@@ -29,18 +29,17 @@ struct Lagrange{T} <: PolynomialBasis{T,T}
         @assert minimum(ξ) ≥ leftendpoint(support(g))
         @assert maximum(ξ) ≤ rightendpoint(support(g))
 
-        denom = zeros(n)
+        denom = ones(n)
         diffs = zeros(n,n)
 
         for i in 1:length(ξ)
             p = 1
             for j in 1:length(ξ)
-                diffs[i,j] = ξ[i] - ξ[j]
+                diffs[i,j] = 1 / (ξ[i] - ξ[j])
                 if i ≠ j
-                    p *= diffs[i,j]
+                    denom[i] *= diffs[i,j]
                 end
             end
-            denom[i] = 1/p
         end
 
         new(n, g, denom, diffs, vandermonde_matrix_inverse(ξ))
@@ -85,9 +84,9 @@ function BasisFunctions.unsafe_eval_element_derivative(b::Lagrange{T}, idx::Poly
 
     for l in 1:nnodes(b)
         if l ≠ idx
-            z = 1 / d[idx,l]
+            z = d[idx,l]
             for i in 1:nnodes(b)
-                i ≠ idx && i ≠ l ? z *= (x - ξ[i]) / d[idx,i] : nothing
+                i ≠ idx && i ≠ l ? z *= (x - ξ[i]) * d[idx,i] : nothing
             end
             y += z
         end
