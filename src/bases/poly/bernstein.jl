@@ -14,14 +14,13 @@ struct Bernstein{T} <: PolynomialBasis{T,T}
     n :: Int
     ξ :: OffsetVector{T,Vector{T}}
 
-    function Bernstein{T}(ξ) where {T}
-        new(length(ξ), OffsetVector(ξ, 0:length(ξ)-1))
+    function Bernstein(ξ::Vector{T}) where {T}
+        new{T}(length(ξ), OffsetVector(ξ, 0:length(ξ)-1))
     end
 end
 
-function Bernstein(ξ::Vector{T}) where {T}
-    Bernstein{T}(ξ)
-end
+Bernstein(n::Int) = Bernstein(collect(LinRange(0.0, 1.0, n)))
+Bernstein{T}(n::Int) where {T} = Bernstein(collect(LinRange{T}(0.0, 1.0, n)))
 
 # Convenience constructor: map the Bernstein basis to the interval [a,b]
 Bernstein(ξ, a::Number, b::Number) = rescale(Bernstein(ξ), a, b)
@@ -35,6 +34,9 @@ BasisFunctions.native_index(b::Bernstein, idxn) = BernsteinIndex(idxn)
 BasisFunctions.hasderivative(b::Bernstein) = true
 BasisFunctions.hasantiderivative(b::Bernstein) = false
 BasisFunctions.support(b::Bernstein) = BernsteinInterval()
+
+BasisFunctions.similar(::Bernstein, ::Type{T}, n::Int) where {T} = Bernstein{T}(n)
+BasisFunctions.similar(::Bernstein, ::Type{T}, ξ::Vector{T}) where {T} = Bernstein{T}(ξ)
 
 Base.size(b::Bernstein) = b.n
 
