@@ -9,7 +9,7 @@ module MoreBasisFunctions
 
     export nodes, nnodes, degree
 
-    include("bases/general/vandermonde_matrix.jl")
+    include("bases/generic/vandermonde_matrix.jl")
 
     const PolynomIndex = Int
 
