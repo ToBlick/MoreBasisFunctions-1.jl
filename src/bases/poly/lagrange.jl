@@ -7,6 +7,7 @@ using BasisFunctions: ChebyshevInterval, PolynomialBasis
 using BasisFunctions: hasderivative, hasantiderivative, support
 
 const LagrangeInterval = ChebyshevInterval
+const LagrangeIndex = NativeIndex{:lagrange}
 
 """
 A basis of the Lagrange polynomials `l_i(x) = ∏_(j,i≠j) (x - ξ^j) / (ξ^i - ξ^j)`
@@ -62,7 +63,7 @@ nodes(b::Lagrange)  = b.nodes.points
 nnodes(b::Lagrange) = b.n
 degree(b::Lagrange) = b.n-1
 
-BasisFunctions.native_index(b::Lagrange, idxn) = PolynomIndex(idxn)
+BasisFunctions.native_index(b::Lagrange, idxn) = LagrangeIndex(idxn)
 BasisFunctions.hasderivative(b::Lagrange) = true
 BasisFunctions.hasantiderivative(b::Lagrange) = true
 BasisFunctions.support(b::Lagrange) = support(b.nodes)
@@ -70,17 +71,17 @@ BasisFunctions.support(b::Lagrange) = support(b.nodes)
 Base.size(b::Lagrange) = b.n
 
 
-function BasisFunctions.unsafe_eval_element(b::Lagrange{T}, idx::PolynomIndex, x::T) where {T}
+function BasisFunctions.unsafe_eval_element(b::Lagrange{T}, idx::LagrangeIndex, x::T) where {T}
     local y::T = 1
     local ξ = nodes(b)
     for i in 1:length(ξ)
         i ≠ idx ? y *= x - ξ[i] : nothing
     end
-    y * b.denom[idx]
+    y * b.denom[value(idx)]
 end
 
 
-function BasisFunctions.unsafe_eval_element_derivative(b::Lagrange{T}, idx::PolynomIndex, x::T) where {T}
+function BasisFunctions.unsafe_eval_element_derivative(b::Lagrange{T}, idx::LagrangeIndex, x::T) where {T}
     local y::T = 0
     local z::T
     local ξ = nodes(b)
@@ -99,9 +100,9 @@ function BasisFunctions.unsafe_eval_element_derivative(b::Lagrange{T}, idx::Poly
 end
 
 
-function unsafe_eval_element_antiderivative(b::Lagrange{T}, idx::PolynomIndex, x::T) where {T}
+function unsafe_eval_element_antiderivative(b::Lagrange{T}, idx::LagrangeIndex, x::T) where {T}
     local y = zero(nodes(b))
-    y[idx] = 1
+    y[value(idx)] = 1
     lint = polyint(Poly(b.vdminv*y))
     return lint(x) - lint(leftendpoint(support(b)))
 end

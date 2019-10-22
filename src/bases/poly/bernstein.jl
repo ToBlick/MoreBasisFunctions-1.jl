@@ -8,6 +8,7 @@ using BasisFunctions: UnitInterval, PolynomialBasis
 using BasisFunctions: hasderivative, hasantiderivative, support
 
 const BernsteinInterval = UnitInterval
+const BernsteinIndex = NativeIndex{:bernstein}
 
 struct Bernstein{T} <: PolynomialBasis{T,T}
     n :: Int
@@ -30,7 +31,7 @@ nodes(b::Bernstein)  = b.ξ.parent
 nnodes(b::Bernstein) = b.n
 degree(b::Bernstein) = b.n-1
 
-BasisFunctions.native_index(b::Bernstein, idxn) = PolynomIndex(idxn)
+BasisFunctions.native_index(b::Bernstein, idxn) = BernsteinIndex(idxn)
 BasisFunctions.hasderivative(b::Bernstein) = true
 BasisFunctions.hasantiderivative(b::Bernstein) = false
 BasisFunctions.support(b::Bernstein) = BernsteinInterval()
@@ -38,7 +39,7 @@ BasisFunctions.support(b::Bernstein) = BernsteinInterval()
 Base.size(b::Bernstein) = b.n
 
 
-function _bernstein(b::Bernstein{T}, i::Int, n::Int, x::T) where {T}
+function _bernstein(b::Bernstein{T}, i::BernsteinIndex, n::BernsteinIndex, x::T) where {T}
     if i < 0 || i > n
         return zero(T)
     else
@@ -50,14 +51,16 @@ function _bernstein(b::Bernstein{T}, i::Int, n::Int, x::T) where {T}
     end
 end
 
+_bernstein(b::Bernstein, i, n, x) = _bernstein(b, native_index(b,i), native_index(b,n), x)
 
-function BasisFunctions.unsafe_eval_element(b::Bernstein{T}, i::PolynomIndex, x::T) where {T}
+
+function BasisFunctions.unsafe_eval_element(b::Bernstein, i, x)
     @assert i ≥ 1 && i ≤ nnodes(b)
     _bernstein(b, i-1, nnodes(b)-1, x)
 end
 
 
-function BasisFunctions.unsafe_eval_element_derivative(b::Bernstein{T}, i::PolynomIndex, x::T) where {T}
+function BasisFunctions.unsafe_eval_element_derivative(b::Bernstein, i, x)
     @assert i ≥ 1 && i ≤ nnodes(b)
     (nnodes(b)-1) * ( _bernstein(b, i-2, nnodes(b)-2, x) - _bernstein(b, i-1, nnodes(b)-2, x) )
 end

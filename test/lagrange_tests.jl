@@ -41,8 +41,6 @@ P = 80
 
 
     @testset "$(rpad("Basis antiderivative",P))" begin
-        @test moment(b, 1) == 1.0
-        @test moment(b, 2) == 1.0
 
         @test eval_element_antiderivative(b, 1, -1.0) == 0.0
         @test eval_element_antiderivative(b, 1,  0.0) == 0.75
