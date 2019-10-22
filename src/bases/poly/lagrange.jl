@@ -54,6 +54,10 @@ function Lagrange(ξ::Vector{T}) where {T}
     Lagrange(ScatteredGrid(ξ, LagrangeInterval()))
 end
 
+# Convenience constructor: map the Lagrange basis to the interval [a,b]
+Lagrange(x, a::Number, b::Number) = rescale(Lagrange(x), a, b)
+
+
 nodes(b::Lagrange)  = b.grid.points
 nnodes(b::Lagrange) = b.n
 degree(b::Lagrange) = b.n-1
