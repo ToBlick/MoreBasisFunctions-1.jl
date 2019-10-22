@@ -3,7 +3,7 @@
 #######################
 
 using Polynomials: Poly, polyint
-using BasisFunctions: ChebyshevInterval
+using BasisFunctions: ChebyshevInterval, PolynomialBasis
 using BasisFunctions: hasderivative, hasantiderivative, support
 
 const LagrangeInterval = ChebyshevInterval

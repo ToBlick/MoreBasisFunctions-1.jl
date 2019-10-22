@@ -2,12 +2,12 @@ module MoreBasisFunctions
 
     using GridArrays: ScatteredGrid
     using BasisFunctions
-    using BasisFunctions: PolynomialBasis, PolynomialDegree
 
     export PolynomIndex
     export Lagrange, LagrangeInterval
 
-    export nodes, nnodes, degree
+    export eval_element, eval_element_derivative, eval_element_antiderivative
+    export nodes, nnodes, degree, support, moment
 
     include("bases/generic/dictionary.jl")
     include("bases/generic/vandermonde_matrix.jl")

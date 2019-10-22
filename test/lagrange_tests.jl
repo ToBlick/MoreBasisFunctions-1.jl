@@ -1,8 +1,5 @@
 
-using MoreBasisFunctions: eval_element_antiderivative
-using BasisFunctions: eval_element_derivative, moment
-using BasisFunctions: hasderivative, hasantiderivative, support
-using BasisFunctions: PolynomialDegree
+using BasisFunctions: hasderivative, hasantiderivative
 
 ξ = [-1.0, +1.0]
 b = Lagrange(ξ)
