@@ -4,6 +4,7 @@ module MoreBasisFunctions
     using BasisFunctions
 
     export PolynomIndex
+    export Bernstein, BernsteinInterval
     export Lagrange, LagrangeInterval
 
     export eval_element, eval_element_derivative, eval_element_antiderivative
@@ -13,6 +14,7 @@ module MoreBasisFunctions
     include("bases/generic/vandermonde_matrix.jl")
 
     include("bases/poly/polynomials.jl")
+    include("bases/poly/bernstein.jl")
     include("bases/poly/lagrange.jl")
 
 end # module
