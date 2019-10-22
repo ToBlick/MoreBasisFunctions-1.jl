@@ -1,6 +1,6 @@
 
-using MoreBasisFunctions: unsafe_eval_element_antiderivative
-using BasisFunctions: unsafe_eval_element_derivative
+using MoreBasisFunctions: eval_element_antiderivative
+using BasisFunctions: eval_element_derivative, moment
 using BasisFunctions: hasderivative, hasantiderivative, support
 using BasisFunctions: PolynomialDegree
 
@@ -30,22 +30,25 @@ end
 
 
 @testset "$(rpad("Basis derivative",P))" begin
-    @test unsafe_eval_element_derivative(b, 1, -1.0) == -0.5
-    @test unsafe_eval_element_derivative(b, 1,  0.0) == -0.5
-    @test unsafe_eval_element_derivative(b, 1, +1.0) == -0.5
+    @test eval_element_derivative(b, 1, -1.0) == -0.5
+    @test eval_element_derivative(b, 1,  0.0) == -0.5
+    @test eval_element_derivative(b, 1, +1.0) == -0.5
 
-    @test unsafe_eval_element_derivative(b, 2, -1.0) == +0.5
-    @test unsafe_eval_element_derivative(b, 2,  0.0) == +0.5
-    @test unsafe_eval_element_derivative(b, 2, +1.0) == +0.5
+    @test eval_element_derivative(b, 2, -1.0) == +0.5
+    @test eval_element_derivative(b, 2,  0.0) == +0.5
+    @test eval_element_derivative(b, 2, +1.0) == +0.5
 end
 
 
 @testset "$(rpad("Basis antiderivative",P))" begin
-    @test unsafe_eval_element_antiderivative(b, 1, -1.0) == 0.0
-    @test unsafe_eval_element_antiderivative(b, 1,  0.0) == 0.75
-    @test unsafe_eval_element_antiderivative(b, 1, +1.0) == 1.0
+    @test moment(b, 1) == 1.0
+    @test moment(b, 2) == 1.0
 
-    @test unsafe_eval_element_antiderivative(b, 2, -1.0) == 0.0
-    @test unsafe_eval_element_antiderivative(b, 2,  0.0) == 0.25
-    @test unsafe_eval_element_antiderivative(b, 2, +1.0) == 1.0
+    @test eval_element_antiderivative(b, 1, -1.0) == 0.0
+    @test eval_element_antiderivative(b, 1,  0.0) == 0.75
+    @test eval_element_antiderivative(b, 1, +1.0) == 1.0
+
+    @test eval_element_antiderivative(b, 2, -1.0) == 0.0
+    @test eval_element_antiderivative(b, 2,  0.0) == 0.25
+    @test eval_element_antiderivative(b, 2, +1.0) == 1.0
 end
