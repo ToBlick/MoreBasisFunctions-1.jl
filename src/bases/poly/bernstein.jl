@@ -36,7 +36,7 @@ BasisFunctions.hasantiderivative(b::Bernstein) = false
 BasisFunctions.support(b::Bernstein) = BernsteinInterval()
 
 BasisFunctions.similar(::Bernstein, ::Type{T}, n::Int) where {T} = Bernstein{T}(n)
-BasisFunctions.similar(::Bernstein, ::Type{T}, ξ::Vector{T}) where {T} = Bernstein{T}(ξ)
+BasisFunctions.similar(::Bernstein, ::Type{T}, ξ::Vector{T}) where {T} = Bernstein(ξ)
 
 Base.size(b::Bernstein) = b.n
 
