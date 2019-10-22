@@ -12,9 +12,7 @@ module MoreBasisFunctions
     include("bases/generic/dictionary.jl")
     include("bases/generic/vandermonde_matrix.jl")
 
-    const PolynomIndex = Int
-
+    include("bases/poly/polynomials.jl")
     include("bases/poly/lagrange.jl")
-
 
 end # module
