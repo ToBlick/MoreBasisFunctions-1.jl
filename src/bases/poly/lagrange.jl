@@ -59,6 +59,7 @@ nodes(b::Lagrange)  = b.grid.points
 nnodes(b::Lagrange) = b.n
 degree(b::Lagrange) = b.n-1
 
+BasisFunctions.native_index(b::Lagrange, idxn) = PolynomIndex(idxn)
 BasisFunctions.hasderivative(b::Lagrange) = true
 BasisFunctions.hasantiderivative(b::Lagrange) = true
 BasisFunctions.support(b::Lagrange) = support(b.grid)
@@ -66,29 +67,27 @@ BasisFunctions.support(b::Lagrange) = support(b.grid)
 Base.size(b::Lagrange) = b.n
 
 
-function BasisFunctions.unsafe_eval_element(b::Lagrange{T}, idxn::PolynomialDegree, x) where {T}
+function BasisFunctions.unsafe_eval_element(b::Lagrange{T}, idx::PolynomIndex, x) where {T}
     local y::T = 1
-    local j = idxn.value+1
     local ξ = b.grid.points
     for i in 1:length(ξ)
-        i ≠ j ? y *= x - ξ[i] : nothing
+        i ≠ idx ? y *= x - ξ[i] : nothing
     end
-    y * b.denom[j]
+    y * b.denom[idx]
 end
 
 
-function BasisFunctions.unsafe_eval_element_derivative(b::Lagrange{T}, idxn::PolynomialDegree, x) where {T}
+function BasisFunctions.unsafe_eval_element_derivative(b::Lagrange{T}, idx::PolynomIndex, x) where {T}
     local y::T = 0
     local z::T
-    local j = idxn.value+1
     local ξ = b.grid.points
     local d = b.diffs
 
     for l in 1:nnodes(b)
-        if l ≠ j
-            z = 1 / d[j,l]
+        if l ≠ idx
+            z = 1 / d[idx,l]
             for i in 1:nnodes(b)
-                i ≠ j && i ≠ l ? z *= (x - ξ[i]) / d[j,i] : nothing
+                i ≠ idx && i ≠ l ? z *= (x - ξ[i]) / d[idx,i] : nothing
             end
             y += z
         end
@@ -97,10 +96,9 @@ function BasisFunctions.unsafe_eval_element_derivative(b::Lagrange{T}, idxn::Pol
 end
 
 
-function unsafe_eval_element_antiderivative(b::Lagrange{T}, idxn::PolynomialDegree, x) where {T}
+function unsafe_eval_element_antiderivative(b::Lagrange{T}, idx::PolynomIndex, x) where {T}
     local y = zero(b.grid.points)
-    local j = idxn.value+1
-    y[j] = 1
+    y[idx] = 1
     lint = polyint(Poly(b.vdminv*y))
     return lint(x) - lint(leftendpoint(support(b)))
 end
