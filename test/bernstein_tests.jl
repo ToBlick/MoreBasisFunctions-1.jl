@@ -1,5 +1,5 @@
 
-using BasisFunctions: hasderivative, hasantiderivative
+using BasisFunctions: hasderivative, hasantiderivative, resize
 
 P = 80
 
@@ -15,6 +15,10 @@ P = 80
         @test hasderivative(b) == true
         @test hasantiderivative(b) == false
         @test support(b) == BernsteinInterval{eltype(ξ)}()
+        @test nodes(b) == nodes(similar(b, eltype(ξ), 2))
+        @test nodes(b) == nodes(similar(b, eltype(ξ), ξ))
+        @test nodes(resize(b, 2)) == ξ
+        @test nodes(resize(b, 5)) == [0.0, 0.25, 0.50, 0.75, 1.0]
     end
 
 

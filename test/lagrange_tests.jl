@@ -20,6 +20,8 @@ P = 80
         @test support(b) == LagrangeInterval{eltype(ξ)}()
         @test nodes(blob) == nodes(b)
         @test nodes(bleg) == [-0.5773502691896258, 0.5773502691896258]
+        @test nodes(blob) == nodes(similar(blob, eltype(ξ), 2))
+        @test nodes(bleg) == nodes(similar(bleg, eltype(ξ), 2))
     end
 
 
