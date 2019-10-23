@@ -2,8 +2,6 @@
 # The Lagrange basis
 #######################
 
-using FastGaussQuadrature
-
 using Polynomials: Poly, polyint
 using BasisFunctions: ChebyshevInterval, PolynomialBasis
 using BasisFunctions: hasderivative, hasantiderivative, support
@@ -53,16 +51,13 @@ Lagrange{S}(nodes::ScatteredGrid{T}) where {S,T} = Lagrange{S,T}(nodes)
 Lagrange(nodes::ScatteredGrid) = Lagrange{:custom}(nodes)
 Lagrange{S}(ξ::Vector) where {S} = Lagrange{S}(ScatteredGrid(ξ, LagrangeInterval()))
 Lagrange(ξ::Vector) = Lagrange(ScatteredGrid(ξ, LagrangeInterval()))
-
-get_nodes(::Val{:legendre}, n) = gausslegendre(n)[1]
-get_nodes(::Val{:lobatto}, n) = gausslobatto(n)[1]
-get_nodes(node_type, T, n) = convert(Array{T}, get_nodes(node_type, n))
-
 Lagrange{S}(n::Int) where {S} = Lagrange{S}(get_nodes(Val(S), n))
-Lagrange{S,T}(n::Int) where {S,T} = Lagrange{S}(get_nodes(Val(S), T, n))
+Lagrange{S,T}(n::Int) where {S,T} = Lagrange{S}(get_nodes(Val(S), n, T))
 
-const LagrangeLegendre = Lagrange{:legendre}
-const LagrangeLobatto = Lagrange{:lobatto}
+const LagrangeGaussLegendre = Lagrange{:gauss_legendre}
+const LagrangeLobattoLegendre = Lagrange{:lobatto_legendre}
+const LagrangeGaussChebyshev = Lagrange{:gauss_chebyshev}
+const LagrangeLobattoChebyshev = Lagrange{:lobatto_chebyshev}
 
 # Convenience constructor: map the Lagrange basis to the interval [a,b]
 Lagrange{S}(n::Int, a::Number, b::Number) where {S} = rescale(Lagrange{S}(n), a, b)

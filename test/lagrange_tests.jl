@@ -7,8 +7,10 @@ P = 80
 
     ξ = [-1.0, +1.0]
     b = Lagrange(ξ)
-    blob = LagrangeLobatto(2)
-    bleg = LagrangeLegendre(2)
+    blob = LagrangeLobattoLegendre(2)
+    bgau = LagrangeGaussLegendre(2)
+    blch = LagrangeLobattoChebyshev(2)
+    bgch = LagrangeGaussChebyshev(2)
 
 
     @testset "$(rpad("Basic functionality",P))" begin
@@ -19,9 +21,11 @@ P = 80
         @test hasantiderivative(b) == true
         @test support(b) == LagrangeInterval{eltype(ξ)}()
         @test nodes(blob) == nodes(b)
-        @test nodes(bleg) == [-0.5773502691896258, 0.5773502691896258]
+        @test nodes(blch) == nodes(b)
+        @test nodes(bgau) == [-0.5773502691896258, 0.5773502691896258]
+        @test nodes(bgch) == [-0.7071067811865475, 0.7071067811865475]
         @test nodes(blob) == nodes(similar(blob, eltype(ξ), 2))
-        @test nodes(bleg) == nodes(similar(bleg, eltype(ξ), 2))
+        @test nodes(bgau) == nodes(similar(bgau, eltype(ξ), 2))
     end
 
 
@@ -48,6 +52,8 @@ P = 80
 
 
     @testset "$(rpad("Basis antiderivative",P))" begin
+        # @test moment(b, 1) == 1.0
+        # @test moment(b, 2) == 1.0
 
         @test eval_element_antiderivative(b, 1, -1.0) == 0.0
         @test eval_element_antiderivative(b, 1,  0.0) == 0.75
