@@ -12,7 +12,7 @@ P = 80
     blch = LagrangeLobattoChebyshev(2)
     bgch = LagrangeGaussChebyshev(2)
 
-    BasisFunctions.Test.test_generic_dict_interface(blob)
+    BasisFunctions.Test.test_generic_dict_interface(LagrangeGaussLegendre(10))
 
     @testset "$(rpad("Basic functionality",P))" begin
         @test nodes(b) == ξ

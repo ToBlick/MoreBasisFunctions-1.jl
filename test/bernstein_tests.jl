@@ -8,7 +8,7 @@ P = 80
     ξ = [0.0, 1.0]
     b = Bernstein(ξ)
 
-    BasisFunctions.Test.test_generic_dict_interface(b)
+    BasisFunctions.Test.test_generic_dict_interface(Bernstein(10))
 
     @testset "$(rpad("Basic functionality",P))" begin
         @test nodes(b) == ξ
