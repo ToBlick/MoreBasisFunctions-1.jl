@@ -72,6 +72,8 @@ BasisFunctions.hasderivative(b::Lagrange) = true
 BasisFunctions.hasantiderivative(b::Lagrange) = true
 BasisFunctions.support(b::Lagrange) = support(b.nodes)
 
+BasisFunctions.interpolation_grid(b::Lagrange{S,T}) where {S,T} = ScatteredGrid(get_nodes(Val(S), length(b), T), LagrangeInterval())
+
 BasisFunctions.similar(::Lagrange{S}, ::Type{T}, n::Int) where {S,T} = Lagrange{S,T}(n)
 
 Base.size(b::Lagrange) = (b.n,)
