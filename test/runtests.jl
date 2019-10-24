@@ -1,4 +1,5 @@
 
+using BasisFunctions
 using MoreBasisFunctions
 using Test
 

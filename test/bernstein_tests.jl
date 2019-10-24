@@ -8,12 +8,12 @@ P = 80
     ξ = [0.0, 1.0]
     b = Bernstein(ξ)
 
+    BasisFunctions.Test.test_generic_dict_interface(b)
+
     @testset "$(rpad("Basic functionality",P))" begin
         @test nodes(b) == ξ
         @test nnodes(b) == 2
         @test degree(b) == 1
-        @test hasderivative(b) == true
-        @test hasantiderivative(b) == false
         @test support(b) == BernsteinInterval{eltype(ξ)}()
         @test nodes(b) == nodes(similar(b, eltype(ξ), 2))
         @test nodes(b) == nodes(similar(b, eltype(ξ), ξ))

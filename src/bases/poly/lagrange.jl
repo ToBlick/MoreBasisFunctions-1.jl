@@ -21,7 +21,7 @@ struct Lagrange{S,T} <: PolynomialBasis{T,T}
     diffs::Matrix{T}    # inverse of differences between nodes
     vdminv::Matrix{T}   # inverse Vandermonde matrix
 
-    function Lagrange{S,T}(nodes) where {S,T}
+    function Lagrange{S,T}(nodes::ScatteredGrid{T}) where {S,T}
         local p::T
 
         local ξ = nodes.points
@@ -67,9 +67,8 @@ nodes(b::Lagrange)  = b.nodes.points
 nnodes(b::Lagrange) = b.n
 degree(b::Lagrange) = b.n-1
 
-BasisFunctions.native_index(b::Lagrange, idxn) = LagrangeIndex(idxn)
-BasisFunctions.hasderivative(b::Lagrange) = true
-BasisFunctions.hasantiderivative(b::Lagrange) = true
+BasisFunctions.native_index(b::Lagrange, idx) = LagrangeIndex(idx)
+BasisFunctions.linear_index(b::Lagrange, idx) = LagrangeIndex(idx)
 BasisFunctions.support(b::Lagrange) = support(b.nodes)
 
 BasisFunctions.interpolation_grid(b::Lagrange{S,T}) where {S,T} = ScatteredGrid(get_nodes(Val(S), length(b), T), LagrangeInterval())

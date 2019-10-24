@@ -12,13 +12,12 @@ P = 80
     blch = LagrangeLobattoChebyshev(2)
     bgch = LagrangeGaussChebyshev(2)
 
+    BasisFunctions.Test.test_generic_dict_interface(blob)
 
     @testset "$(rpad("Basic functionality",P))" begin
         @test nodes(b) == ξ
         @test nnodes(b) == 2
         @test degree(b) == 1
-        @test hasderivative(b) == true
-        @test hasantiderivative(b) == true
         @test support(b) == LagrangeInterval{eltype(ξ)}()
         @test nodes(blob) == nodes(b)
         @test nodes(blch) == nodes(b)
