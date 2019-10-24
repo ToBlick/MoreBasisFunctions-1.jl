@@ -74,7 +74,7 @@ BasisFunctions.support(b::Lagrange) = support(b.nodes)
 
 BasisFunctions.similar(::Lagrange{S}, ::Type{T}, n::Int) where {S,T} = Lagrange{S,T}(n)
 
-Base.size(b::Lagrange) = b.n
+Base.size(b::Lagrange) = (b.n,)
 
 
 function BasisFunctions.unsafe_eval_element(b::Lagrange{S,T}, idx::LagrangeIndex, x::T) where {S,T}

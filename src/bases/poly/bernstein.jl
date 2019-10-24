@@ -33,12 +33,12 @@ degree(b::Bernstein) = b.n-1
 BasisFunctions.native_index(b::Bernstein, idxn) = BernsteinIndex(idxn)
 BasisFunctions.hasderivative(b::Bernstein) = true
 BasisFunctions.hasantiderivative(b::Bernstein) = false
-BasisFunctions.support(b::Bernstein) = BernsteinInterval()
+BasisFunctions.support(b::Bernstein{T}) where {T} = BernsteinInterval{T}()
 
 BasisFunctions.similar(::Bernstein, ::Type{T}, n::Int) where {T} = Bernstein{T}(n)
 BasisFunctions.similar(::Bernstein, ::Type{T}, ξ::Vector{T}) where {T} = Bernstein(ξ)
 
-Base.size(b::Bernstein) = b.n
+Base.size(b::Bernstein) = (b.n,)
 
 
 function _bernstein(b::Bernstein{T}, i::BernsteinIndex, n::BernsteinIndex, x::T) where {T}
