@@ -2,8 +2,6 @@
 # The Bernstein basis
 #######################
 
-using OffsetArrays
-
 using BasisFunctions: UnitInterval, PolynomialBasis
 using BasisFunctions: hasderivative, hasantiderivative, support
 
