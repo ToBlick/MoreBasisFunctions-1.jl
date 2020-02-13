@@ -33,9 +33,9 @@ struct Lagrange{S,T} <: PolynomialBasis{T,T}
         denom = ones(n)
         diffs = zeros(n,n)
 
-        for i in 1:length(ξ)
+        for i in eachindex(ξ)
             p = 1
-            for j in 1:length(ξ)
+            for j in eachindex(ξ)
                 diffs[i,j] = 1 / (ξ[i] - ξ[j])
                 if i ≠ j
                     denom[i] *= diffs[i,j]
