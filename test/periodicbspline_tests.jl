@@ -2,10 +2,10 @@ using BasisFunctions: hasderivative, hasantiderivative, resize
 
 P = 80
 
-@testset "$(rpad("Periodic BSplines",P))" begin
+ξ = get_pbspline_nodes(Float64, 5)
+b = PBSpline(2, ξ)
 
-    ξ = get_pbspline_nodes(Float64, 5)
-    b = PBSpline(2, ξ)
+@testset "$(rpad("Periodic BSplines",P))" begin
 
     @testset "$(rpad("Basic functionality",P))" begin
         @test nodes(b) == ξ
