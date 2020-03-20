@@ -17,8 +17,13 @@ jobs:
   fast_finish: true
 
 before_install:
+<<<<<<< HEAD
   - julia --project --color=yes -e 'using Pkg; Pkg.Registry.add(RegistrySpec(url="https://github.com/FrameFunVC/FrameFunRegistry"));'
   - julia --project --color=yes -e 'using Pkg; Pkg.Registry.add(RegistrySpec(url="https://github.com/JuliaRegistries/General"));'
+=======
+    script:
+       julia --project=. --color=yes -e 'using Pkg; Pkg.Registry.add(RegistrySpec(url = "https://github.com/FrameFunVC/FrameFunRegistry"));'
+>>>>>>> Modify Travis YML to find FrameFun Repo
 
 notifications:
   email: false
