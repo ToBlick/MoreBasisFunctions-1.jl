@@ -13,7 +13,7 @@ const LagrangeIndex = NativeIndex{:lagrange}
 A basis of the Lagrange polynomials `l_i(x) = ∏_(j,i≠j) (x - ξ^j) / (ξ^i - ξ^j)`
 on the interval [-1,+1].
 """
-struct Lagrange{S,T} <: PolynomialBasis{T,T}
+struct Lagrange{S,T} <: PolynomialBasis{T}
     n :: Int
     nodes :: ScatteredGrid{T}
 

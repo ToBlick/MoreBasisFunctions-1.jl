@@ -10,7 +10,7 @@ const BernsteinIndex = NativeIndex{:bernstein}
 
 get_bernstein_nodes(T,n) = collect(LinRange{T}(0.0, 1.0, n))
 
-struct Bernstein{T} <: PolynomialBasis{T,T}
+struct Bernstein{T} <: PolynomialBasis{T}
     n :: Int
     nodes :: ScatteredGrid{T}
 
