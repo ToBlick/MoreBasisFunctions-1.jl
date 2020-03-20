@@ -3,6 +3,7 @@ module MoreBasisFunctions
     using GridArrays: ScatteredGrid
     using BasisFunctions
 
+    export PBSpline, PBSplineIndex, PBSplineInterval
     export Bernstein, BernsteinIndex, BernsteinInterval
     export Lagrange, LagrangeIndex, LagrangeInterval
     export LagrangeGaussLegendre, LagrangeLobattoLegendre
@@ -17,5 +18,6 @@ module MoreBasisFunctions
 
     include("bases/poly/bernstein.jl")
     include("bases/poly/lagrange.jl")
+    include("bases/poly/periodicbspline.jl")
 
 end # module
