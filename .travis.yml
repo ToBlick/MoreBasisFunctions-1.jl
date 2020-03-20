@@ -17,8 +17,7 @@ jobs:
   fast_finish: true
 
 before_install:
-    script:
-	   - julia --project=. --color=yes -e 'using Pkg; Pkg.Registry.add(RegistrySpec(url="https://github.com/FrameFunVC/FrameFunRegistry"));'
+  script: julia --project=. --color=yes -e 'using Pkg; Pkg.Registry.add(RegistrySpec(url="https://github.com/FrameFunVC/FrameFunRegistry"));'
 
 notifications:
   email: false
