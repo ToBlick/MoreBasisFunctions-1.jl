@@ -8,6 +8,7 @@ b = PBSpline(2, 5)
 
     @testset "$(rpad("Basic functionality",P))" begin
         ξ = nodes(b)
+        @test ξ == MoreBasisFunctions.get_pbspline_nodes(Float64, 5)
         @test nnodes(b) == 5
         @test degree(b) == 2
         @test support(b) == PBSplineInterval{eltype(ξ)}()
