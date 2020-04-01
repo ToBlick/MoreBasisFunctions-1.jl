@@ -4,7 +4,7 @@
 
 using Polynomials: Poly, polyint
 using BasisFunctions: ChebyshevInterval, PolynomialBasis
-using BasisFunctions: hasderivative, hasantiderivative, support
+using BasisFunctions: hasderivative, hasantiderivative, ordering, support
 
 const LagrangeInterval = ChebyshevInterval
 const LagrangeIndex = NativeIndex{:lagrange}
@@ -13,7 +13,7 @@ const LagrangeIndex = NativeIndex{:lagrange}
 A basis of the Lagrange polynomials `l_i(x) = ∏_(j,i≠j) (x - ξ^j) / (ξ^i - ξ^j)`
 on the interval [-1,+1].
 """
-struct Lagrange{S,T} <: PolynomialBasis{T,T}
+struct Lagrange{S,T} <: PolynomialBasis{T}
     n :: Int
     nodes :: ScatteredGrid{T}
 
@@ -69,6 +69,7 @@ degree(b::Lagrange) = b.n-1
 
 BasisFunctions.native_index(b::Lagrange, idx) = LagrangeIndex(idx)
 BasisFunctions.linear_index(b::Lagrange, idx) = LagrangeIndex(idx)
+BasisFunctions.ordering(b::Lagrange) = Base.OneTo(nnodes(b))
 BasisFunctions.support(b::Lagrange) = support(b.nodes)
 
 BasisFunctions.interpolation_grid(b::Lagrange{S,T}) where {S,T} = ScatteredGrid(get_nodes(Val(S), length(b), T), LagrangeInterval())
