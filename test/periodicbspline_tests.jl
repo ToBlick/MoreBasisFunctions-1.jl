@@ -2,13 +2,12 @@ using BasisFunctions: hasderivative, hasantiderivative, resize
 
 P = 80
 
-ξ = get_pbspline_nodes(Float64, 5)
-b = PBSpline(2, ξ)
+b = PBSpline(2, 5)
 
 @testset "$(rpad("Periodic BSplines",P))" begin
 
     @testset "$(rpad("Basic functionality",P))" begin
-        @test nodes(b) == ξ
+        ξ = nodes(b)
         @test nnodes(b) == 5
         @test degree(b) == 2
         @test support(b) == PBSplineInterval{eltype(ξ)}()
