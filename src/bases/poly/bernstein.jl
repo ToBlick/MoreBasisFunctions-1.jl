@@ -3,7 +3,7 @@
 #######################
 
 using BasisFunctions: UnitInterval, PolynomialBasis
-using BasisFunctions: hasderivative, hasantiderivative, support
+using BasisFunctions: hasderivative, hasantiderivative, ordering, support
 
 const BernsteinInterval = UnitInterval
 const BernsteinIndex = NativeIndex{:bernstein}
@@ -35,6 +35,7 @@ degree(b::Bernstein) = b.n-1
 
 BasisFunctions.native_index(b::Bernstein, idx) = BernsteinIndex(idx)
 BasisFunctions.linear_index(b::Bernstein, idx) = BernsteinIndex(idx)
+BasisFunctions.ordering(b::Bernstein) = Base.OneTo(nnodes(b))
 BasisFunctions.support(b::Bernstein{T}) where {T} = BernsteinInterval{T}()
 
 BasisFunctions.interpolation_grid(b::Bernstein{T}) where {T} = ScatteredGrid(get_bernstein_nodes(T,length(b)), BernsteinInterval{T}())
